@@ -1,1 +1,15 @@
+<<<<<<< HEAD
 # crest-clothing
+=======
+
+  # E-commerce clothing website
+
+  This is a code bundle for E-commerce clothing website. The original project is available at https://www.figma.com/design/WKAUuGsY4GdY7vcnCMEHKM/E-commerce-clothing-website.
+
+  ## Running the code
+
+  Run `npm i` to install the dependencies.
+
+  Run `npm run dev` to start the development server.
+  
+>>>>>>> ea0602d (Meu primeiro commit: subindo a aplicação)
