@@ -11,18 +11,14 @@ export function HomePage() {
   const featuredProducts = products.slice(0, 4);
   const categories = [
     "Camisetas",
-    "Vestidos",
     "Calças",
-    "Jaquetas",
-    "Calçados",
     "Moletons",
-    "Bermudas",
     "Suéteres",
   ];
 
   return (
     <div>
-      <HeroSection backgroundImage={products[1].image} />
+      <HeroSection backgroundImage="/ultima-ceia.jpg" />
 
       {/* Featured Products */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -36,7 +32,7 @@ export function HomePage() {
         <ProductGrid products={featuredProducts} columns={4} />
 
         <div className="text-center mt-12">
-          <Link to="/produtos">
+          <Link to="/products">
             <Button variant="secondary" size="large">
               Ver Todos os Produtos
               <ArrowRight className="ml-2 w-5 h-5" />
