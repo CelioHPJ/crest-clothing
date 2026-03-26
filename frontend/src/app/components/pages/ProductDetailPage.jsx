@@ -74,8 +74,14 @@ export function ProductDetailPage() {
   };
 
   // Garante que arrays existam mesmo se o banco não devolver nada
-  const sizes = product.sizes || [];
-  const colors = product.colors || [];
+  const sizes = product.product_variants 
+    ? [...new Set(product.product_variants.map((variante) => variante.size))]
+    : [];
+
+  // Extrai as cores únicas a partir das variantes do Supabase
+  const colors = product.product_variants 
+    ? [...new Set(product.product_variants.map((variante) => variante.color))]
+    : [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

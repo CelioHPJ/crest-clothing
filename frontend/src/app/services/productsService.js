@@ -4,7 +4,7 @@ import { supabase } from "../../utils/supabase/client";
 export const productsService = {
   // 1. Busca todos os produtos para a vitrine
   getAllProducts: async () => {
-    const { data, error } = await supabase.from('products').select('*');
+    const { data, error } = await supabase.from('products').select('*,product_variants(*)');
     
     if (error) {
       console.error("Erro ao buscar produtos:", error);
@@ -18,7 +18,7 @@ export const productsService = {
   getProductById: async (id) => {
     const { data, error } = await supabase
       .from('products')
-      .select('*')
+      .select('*,product_variants(*)')
       .eq('id', id)
       .single(); 
       

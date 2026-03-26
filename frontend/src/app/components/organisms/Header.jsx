@@ -208,6 +208,7 @@ export function Header() {
         <nav className="hidden md:flex font-bold justify-center items-center h-12 space-x-8 border-t border-gray-100">
           <NavLink to="/" className="text-gray-900 hover:text-gray-600">Início</NavLink>
           <NavLink to="/products" className="text-gray-900 hover:text-gray-600">Produtos</NavLink>
+          <NavLink to="/products" onClick={() => setMobileMenuOpen(false)}>Ofertas</NavLink>
         </nav>
       </div>
 
