@@ -31,7 +31,6 @@ export function ProductDetailPage() {
         setProduct(data);
 
         // 2. Busca produtos relacionados (mesma categoria)
-        // Para simplificar, buscamos todos e filtramos no front-end
         const allProducts = await productsService.getAllProducts();
         const related = allProducts
           .filter((p) => p.category === data.category && p.id !== data.id)
@@ -46,10 +45,10 @@ export function ProductDetailPage() {
     };
 
     fetchProductDetails();
-  }, [id]); // O useEffect roda de novo se o ID na URL mudar
+  }, [id]); 
 
   if (loading) {
-    return <div className="text-center py-20">Carregando detalhes...</div>;
+    return <div className="text-center py-20 text-gray-500 text-lg">Carregando detalhes do produto...</div>;
   }
 
   if (!product) {
@@ -64,24 +63,23 @@ export function ProductDetailPage() {
   }
 
   const handleAddToCart = () => {
-    if (!selectedSize || !selectedColor) {
+    // Só validamos se existirem tamanhos ou cores para escolher
+    if ((sizes.length > 0 && !selectedSize) || (colors.length > 0 && !selectedColor)) {
       alert("Por favor, selecione um tamanho e uma cor");
       return;
     }
+    
     addToCart(product, selectedSize, selectedColor);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
   };
 
   // Garante que arrays existam mesmo se o banco não devolver nada
-  const sizes = product.product_variants 
-    ? [...new Set(product.product_variants.map((variante) => variante.size))]
-    : [];
+  const sizes = product.sizes || [];
+  const colors = product.colors || [];
 
-  // Extrai as cores únicas a partir das variantes do Supabase
-  const colors = product.product_variants 
-    ? [...new Set(product.product_variants.map((variante) => variante.color))]
-    : [];
+  // 🌟 CORREÇÃO AQUI: Lemos 'image_url' e colocamos a foto de segurança se estiver vazio
+  const imagemSegura = product.image_url || "https://placehold.co/600x600/eeeeee/999999?text=Sem+Foto";
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -94,16 +92,18 @@ export function ProductDetailPage() {
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        
+        {/* 🌟 CORREÇÃO AQUI: Passamos a imagemSegura para o componente */}
         <div className="relative overflow-hidden rounded-lg aspect-square bg-gray-100">
-          <Image src={product.image} alt={product.name} />
+          <Image src={imagemSegura} alt={product.name} />
         </div>
 
         <div>
           <p className="text-gray-600 mb-2">{product.category}</p>
           <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
-          {/* Conversão de segurança para Number antes do toFixed */}
+          
           <p className="text-3xl font-bold mb-6">
-            R$ {Number(product.price).toFixed(2)}
+            R$ {Number(product.price || 0).toFixed(2)}
           </p>
 
           <p className="text-gray-700 mb-8 text-lg leading-relaxed">
@@ -166,8 +166,6 @@ export function ProductDetailPage() {
               Produto adicionado ao carrinho com sucesso!
             </div>
           )}
-
-          {/* ... resto das informações estáticas do produto ... */}
         </div>
       </div>
 

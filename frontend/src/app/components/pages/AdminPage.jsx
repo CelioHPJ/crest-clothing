@@ -18,9 +18,10 @@ export function AdminPage() {
   // --- ESTADOS DO FORMULÁRIO (Adiciona os teus outros campos aqui se necessário) ---
   const [nome, setNome] = useState("");
   const [preco, setPreco] = useState("");
-  const [categoria , setCategoria] = useState("");
+  const [categoriaSelecionada , setCategoriaSelecionada] = useState("");
   const [descricao , setDescricao ] = useState("");
   const [image_url , setImage ] = useState("");
+  const [ categorias , setCategorias ] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [buscaAdmin, setBuscaAdmin] = useState("");
   const produtosFiltrados = productList.filter((produto) =>
@@ -56,7 +57,7 @@ export function AdminPage() {
     if (activeView === "formulario") {
       if (produtoEmEdicao) {
         setNome(produtoEmEdicao.name || "");
-        setCategoria(produtoEmEdicao.categories?.name || "");
+        setCategoriaSelecionada(produtoEmEdicao.category_id || "");
         setDescricao(produtoEmEdicao.description || "");
         setImage(produtoEmEdicao.image_url || "");
         
@@ -68,10 +69,31 @@ export function AdminPage() {
         setPreco(valorFormatadoInicial);
       } else {
         setNome("");
-        setPreco(""); // Se quiser, pode deixar como "R$ 0,00" inicial aqui
+        setPreco("");
+        setCategoriaSelecionada("");
+        setDescricao("");
+        setImage("");
       }
     }
   }, [activeView, produtoEmEdicao]);
+
+  useEffect(() => {
+    async function fetchCategories(){
+      try{
+        const{ data , error } = await supabase
+        .from("categories")
+        .select("id,name");
+
+
+        if(error)throw error;
+        setCategorias(data || []);
+      }catch(err){
+        console.error("Erro ao buscar categorias:", err.message);
+      }
+    }
+  fetchCategories();
+    
+  },[]);
 
   // 3. FUNÇÃO DE GUARDAR (CRIA OU ATUALIZA)
   const handleSubmit = async (e) => {
@@ -84,7 +106,10 @@ export function AdminPage() {
       const dadosProduto = {
         name: nome,
         price: parseFloat(precoLimpo),
-        // category_id: 1, <-- Exemplo de outros campos que possas ter
+        category_id:categoriaSelecionada ? categoriaSelecionada:null,
+        description:descricao,
+        image_url:image_url
+        
       };
 
       if (produtoEmEdicao) {
@@ -268,14 +293,15 @@ export function AdminPage() {
                <select
                  type="text"
                  required
-                 value={categoria}
-                 onChange={(e) => setCategoria(e.target.value)}
+                 value={categoriaSelecionada}
+                 onChange={(e) => setCategoriaSelecionada(e.target.value)}
                  className = "w-full border border-gray-300 rounded-md p-2 focus:ring-black focus:border-black"
                  placeholder = "Selecione..."
                 >
-                  <option value= "Camisetas "> Camiseta </option>
-                  <option value= "Calças">Calça</option>
-                  <option value= "Moletons">Moletom</option>
+                  {categorias.map((cat) => (
+                    <option key= {cat.id} value = {cat.id}>{cat.name}</option>
+                  ))}
+                  
                 </select>
              </div>
              <div>

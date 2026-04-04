@@ -18,7 +18,7 @@ export function CartPage() {
           <p className="text-gray-600 mb-8 text-lg">
             Adicione produtos ao carrinho para continuar comprando
           </p>
-          <Link to="/produtos">
+          <Link to="/products">
             <Button variant="primary" size="large">
               Ver Produtos
             </Button>
